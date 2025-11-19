@@ -1,0 +1,113 @@
+/* Container */
+.intro-container {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+  animation: fadeOut 0.5s ease forwards;
+  animation-delay: 5.5s;
+ /* (messages.length * 0.9) */
+}
+
+/* Neon Text */
+.intro-text {
+  font-size: 3rem;
+  color: #00eaff;
+  font-weight: bold;
+ font-family: "Share Tech Mono", monospace;
+
+
+  /* text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff; */
+  animation: glow 3s infinite alternate;
+  z-index: 10;
+}
+
+/* Neon color shift */
+/* @keyframes glow {
+  0% { text-shadow: 0 0 10px #00eaff; color: #00eaff; }
+  33% { text-shadow: 0 0 10px #ff00ff; color: #ff00ff; }
+  66% { text-shadow: 0 0 10px #8a2be2; color: #8a2be2; }
+  100% { text-shadow: 0 0 10px #00ffea; color: #00ffea; }
+} */
+
+/* Glitch Effect */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  overflow: hidden;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00ff;
+  animation: glitchTop 2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00eaff;
+  animation: glitchBottom 1.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitchTop {
+  0% { clip-path: inset(0 0 100% 0); }
+  20% { clip-path: inset(10% 0 60% 0); }
+  40% { clip-path: inset(40% 0 20% 0); }
+  60% { clip-path: inset(20% 0 50% 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes glitchBottom {
+  0% { clip-path: inset(100% 0 0 0); }
+  20% { clip-path: inset(60% 0 10% 0); }
+  40% { clip-path: inset(20% 0 40% 0); }
+  60% { clip-path: inset(50% 0 20% 0); }
+  100% { clip-path: inset(100% 0 0 0); }
+}
+
+/* Scanlines */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.02) 2px,
+    transparent 4px
+  );
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.2;
+}
+
+/* Fade out transition */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Canvas */
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
