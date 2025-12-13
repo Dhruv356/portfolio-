@@ -1,15 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
+import Introloading from "./Components/Introloading";
 import HomePage from "./Pages/HomePage";
+import SkillsPage from "./Pages/Skills";
 
-
-export default function Home() {
+export default function Page() {
   const [showIntro, setShowIntro] = useState(true);
-   const [fadeIn, setFadeIn] = useState(false);
+  const doneOnce = useRef(false);
+
+  const handleFinish = () => {
+    if (doneOnce.current) return;
+    doneOnce.current = true;
+    setShowIntro(false);
+  };
 
   return (
     <>
-      <HomePage/>
+      {showIntro ? (
+        <Introloading onFinish={handleFinish} />
+      ) : (
+        <>
+          <HomePage />
+          <SkillsPage />
+        </>
+      )}
     </>
   );
 }

@@ -8,10 +8,8 @@
   justify-content: center;
   z-index: 9999;
   overflow: hidden;
-  animation: fadeOut 0.5s ease forwards;
-  animation-delay: 5.5s;
- /* (messages.length * 0.9) */
 }
+
 
 /* Neon Text */
 .intro-text {

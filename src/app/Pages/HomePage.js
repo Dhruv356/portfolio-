@@ -1,87 +1,64 @@
 "use client";
 import { useState, useEffect } from "react";
-import IntroOverlay from "../Components/Introloading";
 import "./Home.css";
-
+import { motion } from "framer-motion";
 import Header from "../Components/Header";
+import CardCarousel from "../Components/CardCarousel";
+import BackgroundCanvas from "../Components/background-canvas/backgroundcanvas";
 
-export default function Home() {
-  const [showIntro, setShowIntro] = useState(true);
+export default function HomePage() {
+  const [index, setIndex] = useState(0);
+  const rotatingWords = ["CODE", "ANIMATION", "DESIGN", "TECH", "INTERACTIVITY"];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % rotatingWords.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <>
-      {showIntro && <IntroOverlay onFinish={() => setShowIntro(false)} />}
+    <div className="home-wrapper">
+      <Header />
 
-      {!showIntro && (
-        <div className="home-wrapper">
+    <BackgroundCanvas/>
+      <div className="split-container">
+        <div className="left-side">
+          <h1 className="title glitch-soft">WELCOME TO MY UNIVERSE</h1>
 
-          {/* Background effects */}
-          <div className="stars-bg"></div>
-          <div className="holo-grid"></div>
-<div className="stars-bg"></div>
-<div className="holo-grid"></div>
+          <h2 className="subtitle">
+            <span>I’m a Developer who loves </span>
 
-{/* NEW GALAXY BACKGROUND */}
-<div className="galaxy-mist"></div>
+            <motion.span
+              key={rotatingWords[index]}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              style={{ display: "inline-block", minWidth: 120 }}
+            >
+              {rotatingWords[index]}
+            </motion.span>
+          </h2>
 
-{/* NEW SHOOTING STARS */}
-<div className="shooting-stars">
-  {Array.from({ length: 6 }).map((_, i) => (
-    <div
-      key={i}
-      className="star"
-      style={{
-        top: `${Math.random() * 80}%`,
-        left: `${Math.random() * 100}%`,
-        animationDelay: `${Math.random() * 8}s`,
-        animationDuration: `${2 + Math.random() * 2}s`,
-      }}
-    ></div>
-  ))}
-</div>
+          <p className="description">
+            Blending creativity with technology to craft modern, animated, and interactive web experiences.
+          </p>
 
-      <Header/>
-         
-
-        
- {/* MAIN SPLIT LAYOUT */}
-          <div className="split-container">
-
-            {/* LEFT SIDE TEXT */}
-            <div className="left-side">
-              <h1 className="title glitch-soft" data-text="Dhruv Dalwadi">
-                Dhruv Dalwadi
-              </h1>
-
-              <h2 className="subtitle">
-                Developer • Designer • Animator
-              </h2>
-
-              <p className="description">
-                Blending creativity with technology to craft modern, animated,
-                and interactive web experiences.
-              </p>
-
-              <div className="buttons">
-                <a className="btn-primary" href="#projects">Explore Work</a>
-                <a className="btn-outline" href="#contact">Let's Connect</a>
-              </div>
-            </div>
-
-            {/* CENTER NEON DIVIDER */}
-            <div className="neon-divider"></div>
-
-            {/* RIGHT SIDE HOLOGRAM PANEL */}
-            <div className="right-side">
-              <div className="holo-panel">
-                <h3>Card Carousel</h3>
-                <p>Coming Soon…</p>
-              </div>
-            </div>
-
+          <div className="buttons">
+            <a className="btn-primary" href="#projects">Explore Work</a>
+            <a className="btn-outline" href="#contact">Let’s Connect</a>
           </div>
         </div>
-      )}
-    </>
+
+        <div className="neon-divider"></div>
+
+        <div className="right-side">
+          <div className="holo-panel">
+            <CardCarousel />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
