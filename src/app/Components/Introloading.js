@@ -20,8 +20,7 @@ export default function Introloading({ onFinish }) {
   /* -------------------------
      TEXT ROTATION
   ------------------------- */
-  useEffect(() => {
-  if (effectRun.current) return;
+useEffect(() => {
   effectRun.current = true;
 
   let i = 0;
@@ -31,9 +30,8 @@ export default function Introloading({ onFinish }) {
       i++;
       setIndex(i);
     }
-  }, 700); // message speed
+  }, 700);
 
-  // minimum duration before hiding intro:
   const finishTimer = setTimeout(() => {
     clearInterval(interval);
     onFinish();
