@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import Introloading from "./Components/Introloading";
 import HomePage from "./Pages/HomePage";
 import SkillsPage from "./Pages/Skills";
+import ProjectsPage from "./Pages/ProjectPage";
+import Footer from "./Components/Footer";
 
 export default function Page() {
   const [showIntro, setShowIntro] = useState(true);
@@ -23,6 +25,8 @@ export default function Page() {
         <>
           <HomePage />
           <SkillsPage />
+          <ProjectsPage/>
+          <Footer/>
         </>
       )}
     </>

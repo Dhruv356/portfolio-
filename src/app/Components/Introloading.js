@@ -4,11 +4,11 @@ import "./Intro.css";
 
 export default function Introloading({ onFinish }) {
   const messages = [
-    "Booting Visual System",
-    "Rendering Interface",
-    "Stabilizing UI",
-    "Aligning Components",
-    "Experience Ready."
+    "BOOTING VISUAL SYASTEM",
+    "RENDERING INTERFACE",
+    "STABILIZING UI",
+    "ALIGNING COMPONENTS",
+    "EXPERIENCE READY."
   ];
 
   const [index, setIndex] = useState(0);

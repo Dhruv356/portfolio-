@@ -1,0 +1,144 @@
+/* =========================
+   FOOTER WRAPPER
+========================= */
+.footer-wrapper {
+  position: relative;
+  padding: 80px 8% 30px;
+  background: #000;
+  color: #cfffff;
+  overflow: hidden;
+}
+
+/* =========================
+   BACKGROUND EFFECTS
+========================= */
+.footer-stars {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+              radial-gradient(1px 1px at 70% 60%, #9ff, transparent),
+              radial-gradient(1px 1px at 40% 80%, #fff, transparent);
+  background-size: 300px 300px;
+  opacity: 0.25;
+  animation: driftFooterStars 120s linear infinite;
+  z-index: 0;
+}
+
+@keyframes driftFooterStars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1000px); }
+}
+
+.footer-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+/* =========================
+   CONTENT
+========================= */
+.footer-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* BRAND */
+.footer-logo {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2rem;
+  color: #00eaff;
+  text-shadow: 0 0 10px #00eaff;
+}
+
+.footer-logo span {
+  color: #7b2ff7;
+}
+
+.footer-tagline {
+  margin-top: 10px;
+  max-width: 320px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* LINKS */
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: #cfffff;
+  text-decoration: none;
+  letter-spacing: 1px;
+  position: relative;
+  transition: 0.3s;
+}
+
+.footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1px;
+  background: #00eaff;
+  transition: width 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #00eaff;
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+}
+
+/* SOCIALS */
+.footer-socials {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-socials a {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(0,255,255,0.4);
+  color: #00eaff;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0,255,255,0.25);
+  transition: 0.3s ease;
+}
+
+.footer-socials a:hover {
+  background: #00eaff;
+  color: #000;
+  box-shadow: 0 0 20px #00eaff;
+  transform: translateY(-4px);
+}
+
+/* =========================
+   BOTTOM LINE
+========================= */
+.footer-bottom {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  letter-spacing: 1px;
+}
