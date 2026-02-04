@@ -1,101 +1,179 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import "./Intro.css";
 
 export default function Introloading({ onFinish }) {
-  const messages = [
-    "BOOTING VISUAL SYASTEM",
-    "RENDERING INTERFACE",
-    "STABILIZING UI",
-    "ALIGNING COMPONENTS",
-    "EXPERIENCE READY."
-  ];
+  const messages = useMemo(
+    () => [
+      "BOOTING VISUAL SYSTEM",
+      "RENDERING INTERFACE",
+      "STABILIZING UI",
+      "ALIGNING COMPONENTS",
+      "EXPERIENCE READY",
+    ],
+    []
+  );
 
   const [index, setIndex] = useState(0);
+  const [leaving, setLeaving] = useState(false);
 
-  // Prevent double effects in strict mode
-  const effectRun = useRef(false);
-  const canvasStarted = useRef(false);
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+  const starsRef = useRef([]);
+  const startRef = useRef(0);
 
-  /* -------------------------
-     TEXT ROTATION
-  ------------------------- */
-useEffect(() => {
-  effectRun.current = true;
-
-  let i = 0;
-
-  const interval = setInterval(() => {
-    if (i < messages.length - 1) {
-      i++;
-      setIndex(i);
-    }
-  }, 700);
-
-  const finishTimer = setTimeout(() => {
-    clearInterval(interval);
-    onFinish();
-  }, messages.length * 700 + 400);
-
-  return () => {
-    clearInterval(interval);
-    clearTimeout(finishTimer);
-  };
-}, []);
-
-
-  /* -------------------------
-     STARFIELD CANVAS
-  ------------------------- */
+  // TEXT TIMING
   useEffect(() => {
-    if (canvasStarted.current) return;
-    canvasStarted.current = true;
+    let i = 0;
 
-    const canvas = document.getElementById("starfield");
+    const interval = setInterval(() => {
+      if (i < messages.length - 1) {
+        i += 1;
+        setIndex(i);
+      }
+    }, 720);
+
+    const finishTimer = setTimeout(() => {
+      setLeaving(true);
+      // allow fade-out
+      setTimeout(() => onFinish?.(), 520);
+    }, messages.length * 720 + 520);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(finishTimer);
+    };
+  }, [messages, onFinish]);
+
+  // STARFIELD CANVAS (SOFTER, PREMIUM)
+  useEffect(() => {
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
 
-    const stars = Array.from({ length: 350 }, () => ({
-      x: Math.random() * canvas.width - canvas.width / 2,
-      y: Math.random() * canvas.height - canvas.height / 2,
-      z: Math.random() * canvas.width
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    const resize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = Math.floor(w * DPR);
+      canvas.height = Math.floor(h * DPR);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Build stars once
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    starsRef.current = Array.from({ length: 260 }, () => ({
+      x: Math.random() * W - W / 2,
+      y: Math.random() * H - H / 2,
+      z: Math.random() * W,
+      r: Math.random() * 1.4 + 0.2, // radius
+      a: Math.random() * 0.5 + 0.15, // alpha
     }));
 
-    function animate() {
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    startRef.current = performance.now();
 
-      stars.forEach((star) => {
-        star.z -= 2;
-        if (star.z <= 0) star.z = canvas.width;
+    const animate = (t) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-        const k = 128 / star.z;
-        const px = star.x * k + canvas.width / 2;
-        const py = star.y * k + canvas.height / 2;
+      // Soft fade instead of full clear (gives motion trail)
+      ctx.fillStyle = "rgba(0,0,0,0.35)";
+      ctx.fillRect(0, 0, w, h);
 
-        if (px > 0 && px < canvas.width && py > 0 && py < canvas.height) {
-          const size = (1 - star.z / canvas.width) * 2;
-          ctx.fillStyle = "white";
-          ctx.fillRect(px, py, size, size);
-        }
-      });
+      const speed = 1.6; // slower = more premium
+      const flicker = 0.6 + 0.4 * Math.sin((t - startRef.current) / 900);
 
-      requestAnimationFrame(animate);
-    }
+      for (const s of starsRef.current) {
+        s.z -= speed;
+        if (s.z <= 1) s.z = w;
 
-    animate();
+        const k = 120 / s.z;
+        const px = s.x * k + w / 2;
+        const py = s.y * k + h / 2;
+
+        if (px < 0 || px > w || py < 0 || py > h) continue;
+
+        const size = s.r * (1 - s.z / w) * 2.1;
+
+        // Slight cyan tint; not pure white
+        ctx.fillStyle = `rgba(160, 255, 255, ${Math.min(
+          0.65,
+          s.a * flicker
+        )})`;
+        ctx.fillRect(px, py, Math.max(0.6, size), Math.max(0.6, size));
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    // Start with clean frame
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
-    <div className="intro-container">
-      <canvas id="starfield"></canvas>
+    <AnimatePresence>
+      {!leaving && (
+        <motion.div
+          className="intro-container"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, filter: "blur(6px)" }}
+          transition={{ duration: 0.55, ease: "easeInOut" }}
+        >
+          <canvas ref={canvasRef} className="starfield" />
 
-      <h1 className="intro-text glitch" data-text={messages[index]}>
-        {messages[index]}
-      </h1>
-    </div>
+          <div className="intro-overlay">
+            <div className="scanlines" />
+            <div className="vignette" />
+          </div>
+
+          <div className="intro-center">
+            <div className="intro-chip">
+              <span className="chip-dot" />
+              SYSTEM ONLINE
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={messages[index]}
+                className="intro-text"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+              >
+                {messages[index]}
+              </motion.h1>
+            </AnimatePresence>
+
+            <div className="intro-bar">
+              <span className="intro-bar-fill" />
+            </div>
+
+            <p className="intro-sub">
+              initializing modules • syncing motion • calibrating visuals
+            </p>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

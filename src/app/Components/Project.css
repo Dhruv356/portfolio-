@@ -1,0 +1,28 @@
+.project-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.project-image,
+.project-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.45s ease;
+}
+
+.project-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.project-card:hover .project-video {
+  opacity: 1;
+}
+
+.project-card:hover .project-image {
+  opacity: 0;
+}

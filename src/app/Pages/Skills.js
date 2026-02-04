@@ -1,10 +1,9 @@
-'use client'
+"use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useAnimation, AnimatePresence } from "framer-motion";
-import "./Skill.css";
+import { motion } from "framer-motion";
 import gsap from "gsap";
-
+import "./Skill.css";
 
 const categories = [
   {
@@ -68,133 +67,149 @@ const categories = [
     ],
   },
 ];
+
 export default function Skills() {
+  const sectionRef = useRef(null);
 
-useEffect(() => {
-  const cards = document.querySelectorAll(".skill-card");
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
 
-  cards.forEach((card) => {
-    const scan = card.querySelector(".holo-scan");
-    if (!scan) return;
+    const cards = root.querySelectorAll(".skill-card");
 
-    const onEnter = () => {
-      gsap.fromTo(
-        scan,
-        {
-          x: "-120%",
-          opacity: 0,
-        },
-        {
-          x: "120%",
-          opacity: 1,
-          duration: 1.2,
-          ease: "power2.out",
-          onComplete: () => {
-            gsap.set(scan, {
-              opacity: 0,
-              x: "-120%",
-            });
-          },
-        }
-      );
-    };
+    const handlers = [];
 
-    card.addEventListener("mouseenter", onEnter);
+    cards.forEach((card) => {
+      const scan = card.querySelector(".holo-scan");
+      if (!scan) return;
 
-    return () => {
-      card.removeEventListener("mouseenter", onEnter);
-    };
-  });
-}, []);
+      const onEnter = () => {
+        gsap.killTweensOf(scan);
+        gsap.fromTo(
+          scan,
+          { x: "-120%", opacity: 0 },
+          {
+            x: "120%",
+            opacity: 1,
+            duration: 1.05,
+            ease: "power2.out",
+            onComplete: () => gsap.set(scan, { opacity: 0, x: "-120%" }),
+          }
+        );
+      };
 
+      card.addEventListener("mouseenter", onEnter);
+      handlers.push(() => card.removeEventListener("mouseenter", onEnter));
+    });
+
+    return () => handlers.forEach((fn) => fn());
+  }, []);
 
   return (
-    <section id="skills" className="skills-page">
-    <div className="skillpage-wrapper">
-      
-      {/* HERO */}
-      <header className="skills-hero">
-        <motion.h1 className="skills-title"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          Skills & Tools
+    <section id="skills" className="skills-wrap" ref={sectionRef}>
+      <div className="skills-vignette" />
+
+      <div className="skills-inner">
+        {/* HERO */}
+        <header className="skills-hero">
+          <motion.h1
+            className="skills-title"
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          >
+            Skills & Tools
           </motion.h1>
-        <motion.p className="skills-sub"
-        initial={{ opacity: 0, x: -25 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-        >
-          Technologies I use to craft modern, animated, futuristic web experiences.
-        </motion.p>
-      </header>
-      
-       {/* GRID */}
-      <section className="skills-grid">
-    {categories.map((cat, i) => (
-  <motion.div key={i}
-   className="category-block"
-   initial={{ opacity: 0, y: 60 }}
-   whileInView={{opacity:1,y:0}}
-   viewport={{ once: true, amount: 0.3 }}
-   transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.2 }}
-  >
 
-    <div className="category-header">
-      <h3>{cat.title}</h3>
-      <div className="category-line"></div>
-    </div>
+          <motion.p
+            className="skills-sub"
+            initial={{ opacity: 0, x: -18 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.1 }}
+          >
+            Technologies I use to craft modern, animated, futuristic web experiences.
+          </motion.p>
+        </header>
 
-    <motion.div
-  className="cards-row"
-  initial="hidden"
-  whileInView="show"
-  viewport={{ amount: 0.5 }}
-  variants={{
-    hidden: {},
-    show: { transition: { staggerChildren: 0.1 } },
-  }}
->
-      {cat.items.map((item, j) => (
-         <motion.div
-      key={j}
-      className="skill-card"
-      variants={{
-        hidden: { opacity: 0, x: 30, scale: 0.95 },
-        show: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
-      }} >
-      <span className="holo-scan"></span>
+        {/* GRID */}
+        <section className="skills-grid">
+          {categories.map((cat, i) => (
+            <motion.div
+              key={cat.id}
+              className="category-block"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.06 }}
+            >
+              <div className="category-header">
+                <h3>{cat.title}</h3>
+                <div className="category-line"></div>
+              </div>
 
-     <motion.div
-        animate={{ y: [0, -6, 0, 6, 0] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-      >
-          <motion.div className="icon-wrap"
-            whileHover={{ scale: 1.2, transition: { duration: 0.3 } }}>
-            <img src={item.icon} className="skill-icon" />
-            <div className="icon-aura"></div>
-          </motion.div>
+              <motion.div
+                className="cards-row"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.3 }}
+                variants={{
+                  hidden: {},
+                  show: { transition: { staggerChildren: 0.06 } },
+                }}
+              >
+                {cat.items.map((item, j) => (
+                  <motion.div
+                    key={item.name}
+                    className="skill-card glass"
+                    variants={{
+                      hidden: { opacity: 0, y: 18, scale: 0.98 },
+                      show: {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        transition: { duration: 0.55, ease: "easeOut" },
+                      },
+                    }}
+                    whileHover={{ y: -6 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <span className="holo-scan"></span>
 
-          <h4 className="skill-name">{item.name}</h4>
-          <p className="skill-desc">Proficient & production-ready.</p>
+                    <motion.div
+                      className="skill-float"
+                      animate={{ y: [0, -6, 0, 6, 0] }}
+                      transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                    >
+                      <div className="icon-wrap">
+                        <motion.div
+                          className="icon-hit"
+                          whileHover={{ scale: 1.15 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <img src={item.icon} className="skill-icon" alt={item.name} />
+                        </motion.div>
+                        <div className="icon-aura"></div>
+                      </div>
 
-          <div className="skill-meter">
-            <div
-              className="skill-meter-fill"
-              style={{ width: `${70 + (j % 4) * 6}%` }}
-            />
-          </div>
-</motion.div>
-        </motion.div>
-      ))}
-    </motion.div>
+                      <h4 className="skill-name">{item.name}</h4>
+                      <p className="skill-desc">Proficient & production-ready.</p>
 
-  </motion.div>
-))}
-
-      </section>
-    </div>
+                      <div className="skill-meter">
+                        <div
+                          className="skill-meter-fill"
+                          style={{ width: `${72 + (j % 4) * 6}%` }}
+                        />
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
+          ))}
+        </section>
+      </div>
     </section>
-  )
+  );
 }

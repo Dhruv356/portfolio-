@@ -1,111 +1,134 @@
-/* Container */
 .intro-container {
   position: fixed;
   inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #000;
+  display: grid;
+  place-items: center;
   z-index: 9999;
   overflow: hidden;
+  color: white;
 }
 
-
-/* Neon Text */
-.intro-text {
-  font-size: 3rem;
-  color: #00eaff;
-  font-weight: bold;
- font-family: "Share Tech Mono", monospace;
-
-
-  /* text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff; */
-  animation: glow 3s infinite alternate;
-  z-index: 10;
-}
-
-/* Neon color shift */
-/* @keyframes glow {
-  0% { text-shadow: 0 0 10px #00eaff; color: #00eaff; }
-  33% { text-shadow: 0 0 10px #ff00ff; color: #ff00ff; }
-  66% { text-shadow: 0 0 10px #8a2be2; color: #8a2be2; }
-  100% { text-shadow: 0 0 10px #00ffea; color: #00ffea; }
-} */
-
-/* Glitch Effect */
-.glitch {
-  position: relative;
-}
-
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
+/* Canvas */
+.starfield {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
-  color: inherit;
-  overflow: hidden;
+  z-index: 0;
 }
 
-.glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 #ff00ff;
-  animation: glitchTop 2s infinite linear alternate-reverse;
+/* overlays */
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 #00eaff;
-  animation: glitchBottom 1.5s infinite linear alternate-reverse;
-}
-
-@keyframes glitchTop {
-  0% { clip-path: inset(0 0 100% 0); }
-  20% { clip-path: inset(10% 0 60% 0); }
-  40% { clip-path: inset(40% 0 20% 0); }
-  60% { clip-path: inset(20% 0 50% 0); }
-  100% { clip-path: inset(0 0 100% 0); }
-}
-
-@keyframes glitchBottom {
-  0% { clip-path: inset(100% 0 0 0); }
-  20% { clip-path: inset(60% 0 10% 0); }
-  40% { clip-path: inset(20% 0 40% 0); }
-  60% { clip-path: inset(50% 0 20% 0); }
-  100% { clip-path: inset(100% 0 0 0); }
-}
-
-/* Scanlines */
 .scanlines {
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.035) 0px,
     rgba(255, 255, 255, 0.02) 2px,
-    transparent 4px
+    transparent 6px
   );
-  z-index: 3;
-  pointer-events: none;
+  opacity: 0.14;
   mix-blend-mode: overlay;
-  opacity: 0.2;
 }
 
-/* Fade out transition */
-@keyframes fadeOut {
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 62%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+/* center content */
+.intro-center {
+  position: relative;
+  z-index: 2;
+  width: min(820px, 92vw);
+  text-align: center;
+  padding: 26px 18px;
+}
+
+/* small chip label */
+.intro-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 18, 30, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  color: rgba(190, 255, 255, 0.9);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 234, 255, 0.75);
+  box-shadow: 0 0 16px rgba(0, 234, 255, 0.35);
+}
+
+/* main text */
+.intro-text {
+  margin: 18px 0 14px;
+  font-family: "Share Tech Mono", monospace;
+  font-size: clamp(1.8rem, 4vw, 3.1rem);
+  letter-spacing: 0.08em;
+  color: #bffcff;
+  text-shadow: 0 0 18px rgba(0, 234, 255, 0.22);
+}
+
+/* progress bar */
+.intro-bar {
+  width: min(520px, 88%);
+  height: 6px;
+  margin: 16px auto 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.intro-bar-fill {
+  display: block;
+  height: 100%;
+  width: 35%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #00eaff, #8b2ff8);
+  animation: loadbar 1.05s ease-in-out infinite alternate;
+}
+
+@keyframes loadbar {
+  from {
+    transform: translateX(-40%);
+    width: 28%;
+    opacity: 0.7;
+  }
   to {
-    opacity: 0;
-    visibility: hidden;
+    transform: translateX(120%);
+    width: 45%;
+    opacity: 1;
   }
 }
 
-/* Canvas */
-#starfield {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
+.intro-sub {
+  margin: 0;
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-size: 0.9rem;
 }

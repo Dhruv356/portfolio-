@@ -11,67 +11,81 @@ export default function ProjectCard({ project }) {
     const card = cardRef.current;
     if (!card) return;
 
+    // Set up perspective for 3D rotation
+    gsap.set(card, {
+      transformPerspective: 900,
+      transformStyle: "preserve-3d",
+    });
+
+    // Setup individual quickSetters
+    const setX = gsap.quickSetter(card, "rotateY", "deg");
+    const setY = gsap.quickSetter(card, "rotateX", "deg");
+    const setScaleX = gsap.quickSetter(card, "scaleX");
+    const setScaleY = gsap.quickSetter(card, "scaleY");
+
+    const onEnter = () => {
+      card.style.willChange = "transform";
+    };
+
     const onMove = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      const rotateX = gsap.utils.mapRange(0, rect.height, 8, -8, y);
-      const rotateY = gsap.utils.mapRange(0, rect.width, -8, 8, x);
+      const rotateY = gsap.utils.mapRange(0, rect.width, -6, 6, x);
+      const rotateX = gsap.utils.mapRange(0, rect.height, 6, -6, y);
 
-      gsap.to(card, {
-        rotateX,
-        rotateY,
-        scale: 1.03,
-        duration: 0.3,
-        ease: "power3.out",
-        transformPerspective: 900,
-      });
+      setX(rotateY);
+      setY(rotateX);
+      setScaleX(1.05);
+      setScaleY(1.05);
     };
 
     const onLeave = () => {
+      card.style.willChange = "auto";
+
       gsap.to(card, {
         rotateX: 0,
         rotateY: 0,
-        scale: 1,
-        duration: 0.5,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 0.6,
         ease: "power3.out",
       });
 
-      // reset video
       if (videoRef.current) {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
       }
     };
 
-    card.addEventListener("mousemove", onMove);
-    card.addEventListener("mouseleave", onLeave);
+    card.addEventListener("pointerenter", onEnter);
+    card.addEventListener("pointermove", onMove);
+    card.addEventListener("pointerleave", onLeave);
 
     return () => {
-      card.removeEventListener("mousemove", onMove);
-      card.removeEventListener("mouseleave", onLeave);
+      card.removeEventListener("pointerenter", onEnter);
+      card.removeEventListener("pointermove", onMove);
+      card.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
+  console.log("✅ USING ProjectCard from:", __filename);
+
   const handleEnter = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-    }
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = 0;
+    videoRef.current.play().catch(() => {});
   };
 
   return (
-    <article
-      className="project-card"
-      ref={cardRef}
-      onMouseEnter={handleEnter}
-    >
-      {/* IMAGE → VIDEO CROSSFADE */}
+    <article ref={cardRef} className="project-card" onMouseEnter={handleEnter}>
       <div className="project-media">
         <img
           src={project.image}
           alt={project.title}
           className="project-image"
+          loading="lazy"
         />
 
         <video
@@ -80,7 +94,7 @@ export default function ProjectCard({ project }) {
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
           className="project-video"
         />
       </div>
@@ -90,14 +104,18 @@ export default function ProjectCard({ project }) {
         <p>{project.desc}</p>
 
         <div className="project-tech">
-          {project.tech.map((t, i) => (
-            <span key={i}>{t}</span>
+          {project.tech.map((t) => (
+            <span key={t}>{t}</span>
           ))}
         </div>
 
         <div className="project-actions">
-          <a href={project.live} target="_blank">Live</a>
-          <a href={project.github} target="_blank">GitHub</a>
+          <a href={project.live} target="_blank" rel="noopener noreferrer">
+            Live
+          </a>
+          <a href={project.github} target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
         </div>
       </div>
     </article>

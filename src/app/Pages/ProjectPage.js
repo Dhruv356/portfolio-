@@ -6,8 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProjectCard from "../Components/ProjectCard";
 import "./Project.css";
 
-
 gsap.registerPlugin(ScrollTrigger);
+console.log("✅ USING ProjectCard from:", __filename);
 
 export const projects = [
   {
@@ -23,7 +23,7 @@ export const projects = [
   {
     id: 2,
     title: "AI Dashboard",
-    desc: "Real-time analytics dashboard with smooth transitions and glassmorphism UI.",
+    desc: "Real-time analytics dashboard with glassmorphism UI.",
     tech: ["React", "Node", "Chart.js"],
     image: "/icons/Dashboard.jpeg",
     video: "/videos/chatapp.mp4",
@@ -33,7 +33,7 @@ export const projects = [
   {
     id: 3,
     title: "3D Product Showcase",
-    desc: "Interactive 3D experience built with Three.js and smooth scroll effects.",
+    desc: "Interactive 3D experience built with Three.js.",
     tech: ["Three.js", "GSAP", "WebGL"],
     image: "/icons/3d.jpg",
     video: "/videos/e-commerce.mp4",
@@ -41,6 +41,7 @@ export const projects = [
     github: "#",
   },
 ];
+
 export default function ProjectsPage() {
   const sectionRef = useRef(null);
 

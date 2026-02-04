@@ -1,0 +1,269 @@
+/* ===========================
+   PROCESS / WORKFLOW SECTION
+   (Matches your neon + glass theme)
+=========================== */
+
+.process-wrap {
+  width: 100%;
+  position: relative;
+  color: #e8faff;
+  overflow: hidden;
+
+  /* ✅ bring cards into view */
+  padding: 80px 8% 120px;
+}
+
+/* Calm background overlay (works with your grid/stars bg) */
+.process-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.55) 70%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+  z-index: 0;
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.process-hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.process-kicker {
+  color: #00eaff;
+  letter-spacing: 0.28em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  opacity: 0.95;
+}
+
+.process-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  line-height: 1.08;
+  margin: 0 0 14px;
+  text-shadow: 0 0 14px rgba(0, 234, 255, 0.22);
+}
+
+.process-sub {
+  margin: 0 auto;
+  max-width: 68ch;
+  opacity: 0.78;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* Divider between hero and grid */
+.process-divider {
+  position: relative;
+  z-index: 1;
+  width: 140px;
+  height: 2px;
+  margin: 42px auto 62px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 234, 255, 0.65),
+    transparent
+  );
+  box-shadow: 0 0 18px rgba(0, 234, 255, 0.35);
+  opacity: 0.85;
+}
+
+/* ===========================
+   GRID
+=========================== */
+
+.process-grid {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+
+  /* ✅ brings cards a bit closer to hero */
+  margin-top: -10px;
+}
+
+/* ===========================
+   CARD (Glass)
+=========================== */
+
+.process-card {
+  position: relative;
+  padding: 18px;
+  border-radius: 16px;
+
+  background: rgba(0, 18, 30, 0.26);
+  border: 1px solid rgba(0, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+
+  overflow: hidden;
+  transform-style: preserve-3d;
+
+  transition: transform 0.35s ease, border-color 0.35s ease,
+    box-shadow 0.35s ease, background 0.35s ease;
+}
+
+/* subtle inner gradient for premium feel */
+.process-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      circle at 20% 10%,
+      rgba(0, 234, 255, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 90%,
+      rgba(139, 47, 248, 0.08),
+      transparent 55%
+    );
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.process-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 255, 255, 0.26);
+  box-shadow: 0 0 30px rgba(0, 234, 255, 0.14);
+  background: rgba(0, 18, 30, 0.22);
+}
+
+/* ===========================
+   CARD TOP ROW
+=========================== */
+
+.process-top {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.process-index {
+  color: #00eaff;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  opacity: 0.95;
+}
+
+.process-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(0, 234, 255, 0.35);
+  box-shadow: 0 0 18px rgba(0, 234, 255, 0.35);
+}
+
+/* ===========================
+   CARD TEXT
+=========================== */
+
+.process-card-title {
+  position: relative;
+  z-index: 3;
+  margin: 8px 0 8px;
+  font-size: 1.05rem;
+  letter-spacing: 0.2px;
+}
+
+.process-desc {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  opacity: 0.74;
+  line-height: 1.65;
+  font-size: 0.92rem;
+}
+
+/* ===========================
+   TAGS
+=========================== */
+
+.process-tags {
+  position: relative;
+  z-index: 3;
+  margin-top: 14px;
+
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.process-tag {
+  font-size: 0.72rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  background: rgba(0, 234, 255, 0.12);
+  border: 1px solid rgba(0, 234, 255, 0.22);
+  color: #bffcff;
+
+  transition: 0.25s ease;
+}
+
+.process-card:hover .process-tag {
+  background: rgba(0, 234, 255, 0.16);
+  border-color: rgba(0, 234, 255, 0.28);
+}
+
+/* ===========================
+   HOLO SCAN (hover sweep)
+=========================== */
+
+.holo-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 45%,
+    rgba(0, 234, 255, 0.22),
+    transparent 55%
+  );
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+/* 2 columns */
+@media (max-width: 1100px) {
+  .process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 1 column */
+@media (max-width: 780px) {
+  .process-wrap {
+    padding: 90px 6% 110px;
+  }
+
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .process-divider {
+    margin: 34px auto 50px;
+  }
+}

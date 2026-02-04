@@ -1,5 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 import "./cardcarousel.css";
 
 export default function CardCarousel() {
@@ -8,73 +10,63 @@ export default function CardCarousel() {
     { name: "Next.js", desc: "Full-stack + hybrid rendering.", icon: "/icons/next-js.svg" },
     { name: "Node.js", desc: "Backend JavaScript runtime.", icon: "/icons/nodejs.svg" },
     { name: "MongoDB", desc: "Flexible NoSQL database.", icon: "/icons/mongo.svg" },
-    { name: "Express", desc: "Minimal & powerful backend framework.", icon: "/icons/expressjs.svg" }
+    { name: "Express", desc: "Minimal & powerful backend framework.", icon: "/icons/expressjs.svg" },
   ];
 
   const [index, setIndex] = useState(0);
-  const [particles, setParticles] = useState([]);
+  const intervalRef = useRef(null);
 
-  // Generate random particles only on client
+  // GSAP auto-rotation
   useEffect(() => {
-    const particleSet = techStack.map(() =>
-      Array.from({ length: 8 }).map(() => ({
-        x: Math.random(),
-        y: Math.random(),
-      }))
-    );
-    setParticles(particleSet);
-  }, []);
+    intervalRef.current = gsap.delayedCall(3.2, function tick() {
+      setIndex((prev) => (prev + 1) % techStack.length);
+      intervalRef.current = gsap.delayedCall(3.2, tick);
+    });
 
-  const prev = () =>
-    setIndex((index - 1 + techStack.length) % techStack.length);
+    return () => {
+      intervalRef.current?.kill();
+    };
+  }, [techStack.length]);
 
-  const next = () =>
-    setIndex((index + 1) % techStack.length);
+  const pause = () => intervalRef.current?.pause();
+  const resume = () => intervalRef.current?.resume();
 
   return (
-    <div className="carousel-wrapper">
+    <div className="carousel-wrapper" onMouseEnter={pause} onMouseLeave={resume}>
       <div className="carousel">
-        {techStack.map((tech, i) => (
-          <div
-            key={i}
-            className={`carousel-card ${
-              i === index
-                ? "active"
-                : i === (index + 1) % techStack.length
-                ? "next"
-                : (index - 1 + techStack.length) % techStack.length === i
-                ? "prev"
-                : ""
-            }`}
-          >
-            {/* --- PARTICLES --- */}
-            <div className="particles">
-              {particles[i]?.map((p, idx) => (
-                <div
-                  key={idx}
-                  className="particle"
-                  style={{
-                    "--rand-x": p.x,
-                    "--rand-y": p.y,
-                    left: "50%",
-                    top: "45%",
-                  }}
-                />
-              ))}
+        {techStack.map((tech, i) => {
+          let state = "idle";
+          if (i === index) state = "active";
+          else if (i === (index + 1) % techStack.length) state = "next";
+          else if (i === (index - 1 + techStack.length) % techStack.length)
+            state = "prev";
+
+          return (
+            <div key={tech.name} className="carousel-card" data-state={state}>
+              <div className="card-content">
+                <img src={tech.icon} className="tech-icon" alt={tech.name} />
+                <h3>{tech.name}</h3>
+                <p>{tech.desc}</p>
+              </div>
             </div>
-
-            {/* --- CARD CONTENT --- */}
-            <img src={tech.icon} className="tech-icon" alt={tech.name} />
-
-            <h3>{tech.name}</h3>
-            <p>{tech.desc}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
+      {/* manual override */}
       <div className="carousel-controls">
-        <button onClick={prev} className="carousel-btn">‹</button>
-        <button onClick={next} className="carousel-btn">›</button>
+        <button
+          className="carousel-btn"
+          onClick={() => setIndex((index - 1 + techStack.length) % techStack.length)}
+        >
+          ‹
+        </button>
+        <button
+          className="carousel-btn"
+          onClick={() => setIndex((index + 1) % techStack.length)}
+        >
+          ›
+        </button>
       </div>
     </div>
   );
