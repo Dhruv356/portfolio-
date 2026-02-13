@@ -17,8 +17,8 @@ export const projects = [
     tech: ["React", "Node.js", "Express", "MongoDB", "JWT"],
     image: "/icons/Tech-Trove.jpeg",
     video: "/videos/e-commerce.mp4",
-    live: "#",     // add deployed link later
-    github: "#",   // add repo link later
+    live: "https://techtrovelive.onrender.com",     // add deployed link later
+    github: "https://github.com/Dhruv356/techtrovelive",   // add repo link later
   },
   {
     id: 2,
@@ -27,8 +27,8 @@ export const projects = [
     tech: ["React", "Socket.io", "Node.js", "Express"],
     image: "/icons/chatapp.jpeg",
     video: "/videos/chatapp.mp4",
-    live: "#",
-    github: "#",
+    live: "https://chatty-dg4g.onrender.com",
+    github: "https://github.com/Dhruv356/chatapp.git",
   },
   {
     id: 3,
