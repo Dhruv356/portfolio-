@@ -1,14 +1,21 @@
-/* Section wrapper (same system as About) */
+/* =========================
+   SKILLS SECTION (FINAL)
+   ========================= */
+
+/* Section wrapper */
 .skills-wrap {
   width: 100%;
   min-height: 100vh;
   padding: 90px 6% 70px;
   position: relative;
   color: white;
-  overflow: hidden;
+
+  /* background clipped */
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
-/* Background calming vignette (like About) */
+/* Background vignette */
 .skills-vignette {
   position: absolute;
   inset: 0;
@@ -27,11 +34,12 @@
   z-index: 1;
 }
 
-/* Shared glass token (like About) */
+/* Glass token */
 .glass {
   background: rgba(0, 18, 30, 0.28);
   border: 1px solid rgba(0, 255, 255, 0.14);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* HERO */
@@ -67,6 +75,7 @@
 /* CATEGORY */
 .category-block {
   padding: 10px 0;
+  position: relative;
 }
 
 .category-header {
@@ -91,39 +100,88 @@
   background: linear-gradient(90deg, #00ffff44, transparent);
 }
 
-/* Horizontal card row (more intentional) */
+/* Hint pill */
+.scroll-hint {
+  font-size: 0.78rem;
+  color: rgba(191, 252, 255, 0.92);
+  border: 1px solid rgba(0, 234, 255, 0.22);
+  background: rgba(0, 18, 30, 0.35);
+  padding: 6px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 0 22px rgba(0, 234, 255, 0.12);
+  opacity: 0; /* GSAP fades it in once */
+}
+
+/* Optional fade edge */
+.category-block::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 46px;
+  bottom: 0;
+  width: 120px;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.65));
+}
+
+/* =========================
+   HORIZONTAL ROW (WORKING)
+   ========================= */
+
+/* Scroll viewport */
+/* ===== FORCE FIX (must be last in file) ===== */
 .cards-row {
-  display: flex;
-  gap: 22px;
-  overflow-x: auto;
-  padding: 12px 4px 16px;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+
+  /* critical: keep viewport limited */
+  min-width: 0 !important;
+
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+
+  /* make it actually take the parent width */
+  box-sizing: border-box !important;
+
+  cursor: grab;
+  user-select: none;
+  touch-action: none !important; /* avoids pointercancel */
 }
 
-/* Scroll style */
-.cards-row::-webkit-scrollbar {
-  height: 6px;
-}
-.cards-row::-webkit-scrollbar-thumb {
-  background: #00eaff55;
-  border-radius: 10px;
-}
-.cards-row::-webkit-scrollbar-track {
-  background: transparent;
+.cards-track {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 18px !important;
+  padding: 12px 6px 16px !important;
+
+  /* critical: track becomes wider than row */
+  width: max-content !important;
 }
 
-/* CARD */
+.cards-track .skill-card {
+  flex: 0 0 280px !important;
+  width: 280px !important;
+  min-width: 280px !important;
+}
+/* =========================
+   CARD
+   ========================= */
 .skill-card {
-  width: 260px;
-  min-width: 260px;
+  flex: 0 0 280px;
+  width: 280px;
+  min-width: 280px;
+
   padding: 22px;
   border-radius: 16px;
   text-align: center;
-  transition: 0.35s ease;
   position: relative;
   overflow: hidden;
-  scroll-snap-align: start;
+  transition: 0.35s ease;
   box-shadow: 0 0 30px rgba(0, 234, 255, 0.08);
 }
 
@@ -145,6 +203,7 @@
   pointer-events: none;
   opacity: 0;
   z-index: 2;
+  mix-blend-mode: screen;
 }
 
 /* ICON */
@@ -207,19 +266,76 @@
   transition: width 0.4s ease;
 }
 
-/* Responsive */
+/* =========================
+   RESPONSIVE
+   ========================= */
 @media (max-width: 900px) {
   .skills-wrap {
     padding: 80px 6% 60px;
   }
+
   .skills-hero {
     margin-bottom: 46px;
   }
-  .cards-row {
-    gap: 16px;
-  }
+
   .skill-card {
+    flex: 0 0 240px;
     width: 240px;
     min-width: 240px;
   }
+
+  .category-block::after {
+    width: 80px;
+  }
+}
+/* FIX: allow grid children to shrink instead of expanding to content width */
+.skills-grid > * {
+  min-width: 0 !important;
+}
+
+.category-block {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+  overflow: visible !important;/* keeps the huge track from expanding the grid item */
+}
+/* Hide scrollbar (Chrome/Edge/Safari) */
+.cards-row::-webkit-scrollbar {
+  height: 0;
+  display: none;
+}
+
+/* Hide scrollbar (Firefox) */
+.cards-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* old Edge */
+}
+.cards-row {
+  position: relative;
+}
+
+/* Left + right soft fade so the row blends with background */
+.cards-row::before,
+.cards-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cards-row::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.75), transparent);
+}
+
+.cards-row::after {
+  right: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.75));
+}
+.cards-row,
+.cards-track {
+  background: transparent !important;
 }

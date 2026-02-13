@@ -8,6 +8,7 @@ import ProjectsPage from "./Pages/ProjectPage";
 import Footer from "./Components/Footer";
 import About from "./Components/About";
 import ProcessSection from "./Components/ProcessSection";
+import ContactSection from "./Components/ContactSection";
 
 export default function Page() {
   const [showIntro, setShowIntro] = useState(true);
@@ -30,6 +31,7 @@ export default function Page() {
           <SkillsPage />
           <ProcessSection/>
           <ProjectsPage/>
+          <ContactSection/>
           <Footer/>
         </>
       )}
