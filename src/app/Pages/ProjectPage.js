@@ -26,7 +26,7 @@ export const projects = [
     desc: "WhatsApp-like real-time chat application with responsive UI, smooth transitions, and live messaging experience.",
     tech: ["React", "Socket.io", "Node.js", "Express"],
     image: "/icons/chatapp.jpeg",
-    video: "/videos/chatapp.mp4",
+    video: "/videos/Chatapp.mp4",
     live: "https://chatty-dg4g.onrender.com",
     github: "https://github.com/Dhruv356/chatapp.git",
   },
