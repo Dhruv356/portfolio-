@@ -42,7 +42,7 @@ const categories = [
       { name: "Redis", icon: "/icons/redis.svg" },
       { name: "Prisma", icon: "/icons/prisma.svg" },
       { name: "Indexing & Queries", icon: "/icons/query.svg" },
-      { name: "Replication / Backups", icon: "/icons/backup.svg" },
+     
     ],
   },
   {
@@ -66,7 +66,7 @@ const categories = [
       { name: "GSAP", icon: "/icons/gsap.svg" },
       { name: "Motion Design", icon: "/icons/motion.svg" },
       { name: "Blender 3D", icon: "/icons/blender.svg" },
-      { name: "Accessibility", icon: "/icons/a11y.svg" },
+    
     ],
   },
 ];

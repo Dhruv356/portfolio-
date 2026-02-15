@@ -9,90 +9,108 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ContactSection() {
   const sectionRef = useRef(null);
+
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
-const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  message: "",
-});
-  const email = "dhruvdalwadi05@gmail.com"; // change if needed
-  const resumeHref = "Dhruv-Resume.pdf"; // /public/resume/...
 
-useEffect(() => {
-  const ctx = gsap.context((self) => {
-    const q = self.selector;
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-    gsap.from(q(".contact-hero"), {
-      opacity: 0,
-      y: 30,
-      duration: 1,
-      ease: "power3.out",
-      immediateRender: false,
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        once: true,
-      },
-    });
+  const email = "dhruvdalwadi05@gmail.com"; // shown in UI
+  const resumeHref = "Dhruv-Resume.pdf"; // in /public
 
-   gsap.from(q(".contact-card"), {
-  opacity: 0,
-  y: 40,
-  duration: 0.9,
-  stagger: 0.14,
-  ease: "power3.out",
-  immediateRender: false,
-  scrollTrigger: {
-    trigger: sectionRef.current,
-    start: "top 75%",
-    once: true,
-  },
-});
+  // ✅ FormSubmit token (given by FormSubmit)
+  const FORM_ID = "ad11b86e45a17c90140560a2333600b2";
 
-    // ✅ safety refresh (fonts/images can shift layout in Next.js)
-    ScrollTrigger.refresh();
-  }, sectionRef);
+  useEffect(() => {
+    const ctx = gsap.context((self) => {
+      const q = self.selector;
 
-  return () => ctx.revert();
-}, []);
-const handleChange = (e) => {
-  setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
-};
+      gsap.from(q(".contact-hero"), {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        ease: "power3.out",
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          once: true,
+        },
+      });
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (status === "sending") return;
+      gsap.from(q(".contact-card"), {
+        opacity: 0,
+        y: 40,
+        duration: 0.9,
+        stagger: 0.14,
+        ease: "power3.out",
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          once: true,
+        },
+      });
 
-  setStatus("sending");
+      ScrollTrigger.refresh();
+    }, sectionRef);
 
-  try {
-    const res = await fetch(
-      "https://formsubmit.co/ajax/dhruvdalwadi05@gmail.com",
-      {
+    return () => ctx.revert();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value }));
+  };
+
+  // ✅ Most reliable for FormSubmit: x-www-form-urlencoded + token id
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (status === "sending") return;
+
+    setStatus("sending");
+
+    try {
+      const payload = new URLSearchParams({
+        name: formData.name,
+        email: formData.email,
+        _replyto: formData.email, // so you can reply directly
+        message: formData.message,
+        _subject: "Portfolio Contact",
+        _captcha: "false",
+      });
+
+      const res = await fetch(`https://formsubmit.co/ajax/${FORM_ID}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: "Portfolio Contact",
-          _captcha: "false",
-        }),
+        body: payload,
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        // show error if available
+        throw new Error(data?.message || "Failed to send");
       }
-    );
 
-    if (!res.ok) throw new Error("Failed");
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
 
-    setStatus("success");
-    setFormData({ name: "", email: "", message: "" });
-  } catch {
-    setStatus("error");
-  }
-};
+      // auto reset message after a bit
+      setTimeout(() => setStatus("idle"), 2500);
+    } catch (err) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 2500);
+    }
+  };
+
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(email);
@@ -129,8 +147,6 @@ const handleSubmit = async (e) => {
               Email Me
             </a>
 
-            
-
             <a
               className="btn-outline"
               href={resumeHref}
@@ -144,16 +160,13 @@ const handleSubmit = async (e) => {
 
           <div className="contact-meta">
             <div className="meta-row">
-  <span className="meta-label">Email</span>
+              <span className="meta-label">Email</span>
 
-  <span className="meta-value email-copy" onClick={copyEmail}>
-    {email}
-
-    <span className="copy-icon">
-  {copied ? "✓" : "📄"}
-</span>
-  </span>
-</div>
+              <span className="meta-value email-copy" onClick={copyEmail}>
+                {email}
+                <span className="copy-icon">{copied ? "✓" : "📄"}</span>
+              </span>
+            </div>
 
             <div className="meta-row">
               <span className="meta-label">Location</span>
@@ -174,72 +187,70 @@ const handleSubmit = async (e) => {
             <span className="card-dot" />
           </div>
 
-          {/* ✅ This uses FormSubmit (no backend needed)
-              Replace YOUR_EMAIL with your email.
-          */}
-         <form className="contact-form" onSubmit={handleSubmit}>
-  <div className="field-row">
-    <div className="field">
-      <label>Name</label>
-      <input
-        name="name"
-        type="text"
-        placeholder="Your name"
-        required
-        value={formData.name}
-        onChange={handleChange}
-      />
-    </div>
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <div className="field-row">
+              <div className="field">
+                <label>Name</label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Your name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </div>
 
-    <div className="field">
-      <label>Email</label>
-      <input
-        name="email"
-        type="email"
-        placeholder="you@example.com"
-        required
-        value={formData.email}
-        onChange={handleChange}
-      />
-    </div>
-  </div>
+              <div className="field">
+                <label>Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
-  <div className="field">
-    <label>Message</label>
-    <textarea
-      name="message"
-      placeholder="Tell me about your project / role..."
-      rows={6}
-      required
-      value={formData.message}
-      onChange={handleChange}
-    />
-  </div>
+            <div className="field">
+              <label>Message</label>
+              <textarea
+                name="message"
+                placeholder="Tell me about your project / role..."
+                rows={6}
+                required
+                value={formData.message}
+                onChange={handleChange}
+              />
+            </div>
 
-  <button
-    className="btn-primary full"
-    type="submit"
-    disabled={status === "sending"}
-  >
-    {status === "sending" ? "Sending..." : "Send Message"}
-  </button>
+            <button
+              className="btn-primary full"
+              type="submit"
+              disabled={status === "sending"}
+              aria-busy={status === "sending"}
+            >
+              {status === "sending" ? "Sending..." : "Send Message"}
+            </button>
 
-  {status === "success" && (
-    <p className="form-success">
-      ✅ Thank you for connecting! Your message has been sent.
-    </p>
-  )}
+            {status === "success" && (
+              <p className="form-success">
+                ✅ Thank you for connecting! Your message has been sent.
+              </p>
+            )}
 
-  {status === "error" && (
-    <p className="form-error">
-      ❌ Something went wrong. Please try again.
-    </p>
-  )}
+            {status === "error" && (
+              <p className="form-error">
+                ❌ Something went wrong. Please try again.
+              </p>
+            )}
 
-  <p className="form-note">
-    Prefer LinkedIn? Add your link inside the message.
-  </p>
-</form>
+            <p className="form-note">
+              Prefer LinkedIn? Add your link inside the message.
+            </p>
+          </form>
         </article>
       </div>
 
